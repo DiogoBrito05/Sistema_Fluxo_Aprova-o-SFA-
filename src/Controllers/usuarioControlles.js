@@ -1,10 +1,8 @@
-const conectar = require('../Db/db');
+const conectar = require("../Db/db");
 
 async function criar(req, res) {
   try {
-
-    const { nome, email, senha } = req.body;
-
+    const { nome, email, senha, nivel = 1 } = req.body;
 
     if (!nome) {
       throw new Error("Nome é obrigatório");
@@ -32,19 +30,16 @@ async function criar(req, res) {
       throw new Error("Senha deve ter pelo menos 6 caracteres");
     }
 
-
     const db = await conectar();
 
-
     const [usuarioExistente] = await db.execute(
-      'SELECT * FROM usuarios WHERE email = ?',
-      [email]
+      "SELECT * FROM usuarios WHERE email = ?",
+      [email],
     );
 
     if (usuarioExistente.length > 0) {
       throw new Error("E-mail já cadastrado");
     }
-
 
     await db.execute(
       `
@@ -52,32 +47,25 @@ async function criar(req, res) {
         nome,
         email,
         senha,
-        criadoEm
+        nivel_id
       )
       VALUES (?, ?, ?, ?)
       `,
-      [
-        nome,
-        email,
-        senha,
-        new Date()
-      ]
+      [nome, email, senha, nivel],
     );
 
     return res.status(201).json({
-      message: 'Usuário criado com sucesso'
+      message: "Usuário criado com sucesso",
     });
-
   } catch (error) {
-
     console.log(error);
 
     return res.status(500).json({
-      error: error.message
+      error: error.message,
     });
   }
 }
 
 module.exports = {
-  criar
+  criar,
 };

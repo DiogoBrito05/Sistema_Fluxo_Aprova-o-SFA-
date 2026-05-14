@@ -6,7 +6,7 @@ async function conectar() {
       host: 'localhost',
       user: 'root',
       password: '16082002',
-      database: 'Banco de teste'
+      database: 'sistema_protocolos'
     });
 
     console.log('Conectado ao MySQL!');
